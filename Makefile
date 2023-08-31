@@ -8,8 +8,8 @@ SELF_CONTAINED?=0
 ARCH?=win-x64
 
 COMMIT=$(shell git rev-parse --short HEAD)
-COMMIT_RESOURCE=$(PROJECT_PATH)/Resources/commit.txt
-BUILDTIME_RESOURCE=$(PROJECT_PATH)/Resources/buildtime.txt
+COMMIT_RESOURCE=$(PROJECT_PATH)/commit.txt
+BUILDTIME_RESOURCE=$(PROJECT_PATH)/buildtime.txt
 
 ifeq ($(SELF_CONTAINED),0)
 	SC_OPS=--no-self-contained
