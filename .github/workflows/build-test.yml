@@ -1,0 +1,89 @@
+name: Build, test, upload
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        host: [ubuntu-latest]
+        os: [win, linux, osx]
+        arch: [x86, x64, arm, arm64]
+        sc: [no-self-contained, self-contained]
+        exclude:
+          - os: linux
+            arch: x86
+          - os: osx
+            arch: x86
+          - os: osx
+            arch: arm          
+    runs-on: ${{ matrix.host }}
+    env:
+      APP_NAME: fdspacker
+      PROJECT_PATH: FDSPacker
+      OUTPUT_DIR: output
+      CONFIGURATION: Interim
+      OUTPUT_SUBDIR: ${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.sc }}
+      OUTPUT_FILE: fdspacker-${{ matrix.os }}-${{ matrix.arch }}${{ matrix.sc == 'self-contained' && '-self-contained' || '' }}.${{ matrix.os == 'win' && 'zip' || 'tar.gz' }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Checkout submodules
+      run: git submodule update --init --recursive
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 6.0.x
+    - name: Build
+      env:
+        SC_OPS: ${{ matrix.sc == 'self-contained' && '--self-contained true' || '--no-self-contained' }}
+      run: dotnet publish ${{ env.PROJECT_PATH }} -c ${{ env.CONFIGURATION }} -r ${{ matrix.os }}-${{ matrix.arch }} ${{ env.SC_OPS }} -o ${{ env.OUTPUT_DIR }}/${{ env.OUTPUT_SUBDIR }}/${{ env.APP_NAME }}
+    - name: Simple test
+      if: |
+        (matrix.host == 'ubuntu-latest' && matrix.os == 'linux' && matrix.arch == 'x64') 
+        || (matrix.host == 'macos-latest' && matrix.os == 'osx' && matrix.arch == 'x64')
+        || (matrix.host == 'windows-latest' && matrix.os == 'win' && matrix.arch == 'x64')
+      run: |
+        ./${{ env.OUTPUT_DIR }}/${{ env.OUTPUT_SUBDIR }}/${{ env.APP_NAME }}/fdspacker list-mappers
+    - name: Archive
+      working-directory: ${{ env.OUTPUT_DIR }}/${{ env.OUTPUT_SUBDIR }}
+      env:
+        CMD: ${{ matrix.os == 'win' && 'zip -r9' || 'tar -czvf' }}
+      run: |
+        ${{ env.CMD }} ../../${{ env.OUTPUT_FILE }} ${{ env.APP_NAME }}
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.APP_NAME }}-${{ env.OUTPUT_SUBDIR }}
+        path: ${{ env.OUTPUT_FILE }}
+
+  upload-to-pages:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download artifacts
+      uses: actions/download-artifact@v3
+    - name: Move files to the root
+      run: find -mindepth 2 -exec mv {} . \;
+    - name: Remove empty directories
+      run: find -mindepth 1 -type d -delete
+    - name: Generate index.html
+      run: "(echo \"<html><head><title>FDSPacker</title></head><body>Updated: `date`<br/><br/>\" ; for file in fdspacker-* ; do echo \"<a href='$file'>$file</a><br/>\" ; done ; echo \"</body></html>\") > index.html"
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v1
+      with:
+        path: '.'
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v1
