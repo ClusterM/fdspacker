@@ -17,8 +17,6 @@ namespace wtf.cluster.FDSPacker.JsonTypes
         public string? FileName { get; set; }
         public ushort fileAddress;
         public string FileAddress { get => $"0x{fileAddress:X04}"; set => fileAddress = value.ParseHex(); }
-        public ushort fileSize;
-        public string FileSize { get => $"{fileSize}"; set => fileSize = value.ParseHex(); }
         public Kind FileKind { get; set; }
         public string? Data { get; set; }
     }

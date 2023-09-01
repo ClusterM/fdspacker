@@ -80,20 +80,24 @@ namespace wtf.cluster.FDSPacker
 
             // Copy data to JSON object
             var root = new FdsJsonRoot();
-            var usedFiles = new HashSet<string>();
-            foreach (var side in fds.Sides)
+            for(var sideId = 0; sideId < fds.Sides.Count; sideId++)
             {
+                var side = fds.Sides[sideId];
                 var outSide = new FdsJsonSide();
+                var sideDirName = $"side_{sideId + 1}";
+                var sideFullPath = Path.Combine(outputDir, sideDirName);
+                Directory.CreateDirectory(sideFullPath);
                 CopyPropertiesToJson(side, outSide);
 
                 // Process every file
+                var usedFiles = new HashSet<string>();
                 foreach (var file in side.Files)
                 {
                     var outFile = new FdsJsonFile();
                     CopyPropertiesToJson(file, outFile);
                     // Avoid filename duplication
                     var name = file.FileName;
-                    var altName = name;
+                    var altName = name.ToLower();
                     int id = 1;
                     while (usedFiles.Contains(altName!))
                     {
@@ -101,9 +105,22 @@ namespace wtf.cluster.FDSPacker
                         altName = $"{name}_{id}";
                     }
                     usedFiles.Add(altName);
-                    outFile.Data = $"{altName}.bin";
+                    // Select extention
+                    var ext = file.FileKind switch
+                    {
+                        FdsBlockFileHeader.Kind.Program => "prg",
+                        FdsBlockFileHeader.Kind.Character => "chr",
+                        FdsBlockFileHeader.Kind.NameTable => "nt",
+                        _ => ".bin"
+                    };
+                    // Relative path
+                    outFile.Data = Path.Combine(sideDirName, $"{altName}.{ext}")
+                        .Replace("\\", "/"); // Unix-style
+                    // Absolute path
                     var targetPath = Path.Combine(outputDir, outFile.Data);
+                    // Saving file data
                     File.WriteAllBytes(targetPath, file.Data.ToArray());
+
                     outSide.Files.Add(outFile);
                 }
 
