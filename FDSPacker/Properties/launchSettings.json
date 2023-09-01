@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "FDSPacker": {
+      "commandName": "Project",
+      "commandLineArgs": "unpack \"F:\\Roms\\FDS\\original\\Ai Senshi Nicol (Japan).fds\" \"E:\\FDS_Unpack\""
+    }
+  }
+}

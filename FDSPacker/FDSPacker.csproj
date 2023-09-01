@@ -17,6 +17,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>Nintendo;Famicom;FDS;Famicom Disk System</PackageTags>
     <Configurations>Debug;Release;Interim</Configurations>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -32,9 +33,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="..\LICENSE.txt">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="..\README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
