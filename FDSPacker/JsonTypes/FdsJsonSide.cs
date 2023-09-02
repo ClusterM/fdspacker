@@ -13,7 +13,7 @@ namespace wtf.cluster.FDSPacker.JsonTypes
         /// <summary>
         /// 3-letter ASCII code per game (e.g. ZEL for The Legend of Zelda)
         /// </summary>
-        public string GameName { get; set; } = new("---");
+        public string? GameName { get; set; } = new("---");
 
         private byte manufacturerCode;
         /// <summary>
@@ -56,12 +56,19 @@ namespace wtf.cluster.FDSPacker.JsonTypes
         /// <summary>
         /// Manufacturing date
         /// </summary>
-        public DateTime ManufacturingDate { get; set; }
+        public DateTime? ManufacturingDate { get; set; }
 
+        byte countryCode;
         /// <summary>
         /// Country code. 0x49 = Japan
         /// </summary>
-        byte CountryCode { get; set; }
+        public string CountryCode { get => $"0x{countryCode:X02}"; set => countryCode = (byte)value.ParseHex(); }
+
+        /// <summary>
+        /// "Rewritten disk" date. It's speculated this refers to the date the disk was formatted and rewritten by something like a Disk Writer kiosk.
+        /// In the case of an original (non-copied) disk, this should be the same as Manufacturing date
+        /// </summary>
+        public DateTime? RewrittenDate { get; set; }
 
         private ushort diskWriterSerialNumber;
         /// <summary>

@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "FDSPacker": {
-      "commandName": "Project",
-      "commandLineArgs": "unpack \"F:\\Roms\\FDS\\translations\\Dead Zone (Japan) [eng].fds\" \"E:\\FDS_Unpack\""
-    }
-  }
-}

@@ -4,7 +4,10 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using com.clusterrr.Famicom.Containers;
+using CommandLine;
+using CommandLine.Text;
 using wtf.cluster.FDSPacker.JsonTypes;
+
 
 namespace wtf.cluster.FDSPacker
 {
@@ -38,20 +41,16 @@ namespace wtf.cluster.FDSPacker
                 Console.WriteLine("  (c) Alexey 'Cluster' / https://cluster.wtf / cluster@cluster.wtf");
                 Console.WriteLine("");
 
-                if (args.Length < 3 || args[0] == "help" || args[0] == "--help" || args[0] == "/?")
-                {
-                    PrintHelp();
-                    return 0;
-                }
-
-                switch (args[0].ToLower())
-                {
-                    case "unpack":
-                        FdsUnpack(args[1], args[2]);
-                        break;
-                    case "pack":
-                        throw new NotImplementedException("Not done yet.");
-                }
+                var parser = new Parser(with => with.HelpWriter = null);
+                var parserResult = parser.ParseArguments<PackOptions, UnpackOptions>(args);
+                parserResult
+                    .WithParsed<PackOptions>(options => FdsPack(options))
+                    .WithParsed<UnpackOptions>(options => FdsUnpack(options))
+                    .WithNotParsed(errs =>
+                    {
+                        PrintHelp(errs);
+                        Environment.Exit(1);
+                    });
             }
             catch (Exception ex)
             {
@@ -60,32 +59,45 @@ namespace wtf.cluster.FDSPacker
 #else
                 Console.WriteLine($"ERROR: {ex.Message}");
 #endif
-                return 1;
+                return 2;
             }
-
             return 0;
         }
 
-        static void PrintHelp()
+        static void DisplayHelp<T>(ParserResult<T> result, IEnumerable<Error> errs)
+        {
+            var helpText = HelpText.AutoBuild(result, h =>
+            {
+                var version = Assembly.GetExecutingAssembly()?.GetName()?.Version;
+                var versionStr = $"{version?.Major}.{version?.Minor}{((version?.Build ?? 0) > 0 ? $"{(char)((byte)'a' + version!.Build)}" : "")}";
+                h.AdditionalNewLineAfterOption = false;
+                h.AddDashesToOption = true;
+                h.AutoVersion = false;
+                return HelpText.DefaultParsingErrorsHandler(result, h);
+            }, e => e);
+            Console.WriteLine(helpText);
+        }
+
+        static void PrintHelp(IEnumerable<Error> errs)
         {
             Console.WriteLine($"Usage:");
-            Console.WriteLine($" {Path.GetFileName(Process.GetCurrentProcess().MainModule?.FileName)} pack <diskinfo.json> <output.fds>");
+            Console.WriteLine($" {Path.GetFileName(Process.GetCurrentProcess().MainModule?.FileName)} pack [--header] <diskinfo.json> <output.fds>");
             Console.WriteLine($" {Path.GetFileName(Process.GetCurrentProcess().MainModule?.FileName)} unpack <input.fds> <output directory>");
         }
 
-        static void FdsUnpack(string fdsFile, string outputDir)
+        static void FdsUnpack(UnpackOptions options)
         {
-            var fds = FdsFile.FromFile(fdsFile);
-            Directory.CreateDirectory(outputDir);
+            var fds = FdsFile.FromFile(options.InputFile);
+            Directory.CreateDirectory(options.OutputDir);
 
             // Copy data to JSON object
             var root = new FdsJsonRoot();
-            for(var sideId = 0; sideId < fds.Sides.Count; sideId++)
+            for (var sideId = 0; sideId < fds.Sides.Count; sideId++)
             {
                 var side = fds.Sides[sideId];
                 var outSide = new FdsJsonSide();
                 var sideDirName = $"side_{sideId + 1}";
-                var sideFullPath = Path.Combine(outputDir, sideDirName);
+                var sideFullPath = Path.Combine(options.OutputDir, sideDirName);
                 Directory.CreateDirectory(sideFullPath);
                 CopyPropertiesToJson(side, outSide);
 
@@ -117,7 +129,7 @@ namespace wtf.cluster.FDSPacker
                     outFile.Data = Path.Combine(sideDirName, $"{altName}.{ext}")
                         .Replace("\\", "/"); // Unix-style
                     // Absolute path
-                    var targetPath = Path.Combine(outputDir, outFile.Data);
+                    var targetPath = Path.Combine(options.OutputDir, outFile.Data);
                     // Saving file data
                     File.WriteAllBytes(targetPath, file.Data.ToArray());
 
@@ -128,8 +140,8 @@ namespace wtf.cluster.FDSPacker
             }
 
             // Save JSON
-            var targetFile = Path.Combine(outputDir, DISK_INFO_FILE);
-            var options = new JsonSerializerOptions
+            var targetFile = Path.Combine(options.OutputDir, DISK_INFO_FILE);
+            var jsonOptions = new JsonSerializerOptions
             {
                 WriteIndented = true,
                 DefaultIgnoreCondition = JsonIgnoreCondition.Never,
@@ -137,8 +149,42 @@ namespace wtf.cluster.FDSPacker
                 Converters = { new JsonStringEnumConverter() },
                 PropertyNamingPolicy = new SnakeCaseNamingPolicy()
             };
-            var json = JsonSerializer.Serialize(root, options);
+            var json = JsonSerializer.Serialize(root, jsonOptions);
             File.WriteAllText(targetFile, json);
+        }
+
+        static void FdsPack(PackOptions options)
+        {
+            var inputFile = options.InputFile;
+            var jsonOptions = new JsonSerializerOptions
+            {
+                DefaultIgnoreCondition = JsonIgnoreCondition.Never,
+                ReadCommentHandling = JsonCommentHandling.Skip,
+                Converters = { new JsonStringEnumConverter() },
+                PropertyNamingPolicy = new SnakeCaseNamingPolicy()
+            };
+            var jsonData = File.ReadAllText(inputFile);
+            var root = JsonSerializer.Deserialize<FdsJsonRoot>(jsonData, jsonOptions);
+
+            var output = new FdsFile();
+            foreach (var side in root.Sides)
+            {
+                var outputSide = new FdsDiskSide();
+
+                CopyPropertiesFromJson(side, outputSide);
+                foreach(var file in side.Files)
+                {
+                    var outputFile = new FdsDiskFile();
+                    CopyPropertiesFromJson(file, outputFile);
+                    var dataPath = Path.Combine(Path.GetDirectoryName(inputFile), file.Data);
+                    outputFile.Data = File.ReadAllBytes(dataPath);
+                    outputSide.Files.Add(outputFile);
+                }
+
+                output.Sides.Add(outputSide);
+            }
+
+            output.Save(options.OutputFile, options.UseHeader);
         }
 
         // Easy way to copy properties between types
@@ -152,7 +198,7 @@ namespace wtf.cluster.FDSPacker
             foreach (var sourceProperty in sourceType.GetProperties())
             {
                 var destinationProperty = destinationType.GetProperty(sourceProperty.Name);
-                if (destinationProperty != null)
+                if (destinationProperty != null && destinationProperty.Name != "Files")
                 {
                     if (destinationProperty.PropertyType == sourceProperty.PropertyType)
                     {
@@ -165,17 +211,92 @@ namespace wtf.cluster.FDSPacker
                     else if (destinationProperty.PropertyType == typeof(string))
                     {
                         destinationProperty.SetValue(destination, $"{sourceProperty.GetValue(source)}");
+                    } else
+                    {
+                        throw new InvalidDataException("Unknown data combination");
                     }
                 }
             }
         }
 
-        public class SnakeCaseNamingPolicy : JsonNamingPolicy
+        // Easy way to copy properties between types
+        public static void CopyPropertiesFromJson(object source, object destination)
+        {
+            if (source == null || destination == null) return;
+
+            var sourceType = source.GetType();
+            var destinationType = destination.GetType();
+
+            foreach (var sourceProperty in sourceType.GetProperties())
+            {
+                var destinationProperty = destinationType.GetProperty(sourceProperty.Name);
+                if (destinationProperty != null && destinationProperty.Name != "Data" && destinationProperty.Name != "Files")
+                {
+                    var sourceValue = sourceProperty.GetValue(source);
+                    if (sourceProperty.PropertyType == destinationProperty.PropertyType)
+                    {                        
+                        destinationProperty.SetValue(destination, sourceValue);
+                    }
+                    else if (sourceProperty.PropertyType == typeof(string) && destinationProperty.PropertyType.IsEnum)
+                    {
+                        object outputValue;
+                        if (!Enum.TryParse(destinationProperty.PropertyType, sourceValue as string, true, out outputValue))
+                            outputValue = (sourceValue as string).ParseHex();
+                        if (outputValue == null) 
+                            throw new InvalidDataException($"Invalid value \"{sourceValue}\" for \"{sourceProperty.Name}\"");
+                        destinationProperty.SetValue(destination, outputValue);
+                    }
+                    else if (sourceProperty.PropertyType == typeof(string))
+                    {
+                        destinationProperty.SetValue(destination, (sourceValue as string).ParseHex());
+                    }
+                    else
+                    {
+                        throw new InvalidDataException("Unknown data combination");
+                    }
+                }
+            }
+        }
+
+        private class SnakeCaseNamingPolicy : JsonNamingPolicy
         {
             public override string ConvertName(string name)
                 => ToSnakeCase(name);
             private static string ToSnakeCase(string str)
                 => Regex.Replace(str, "(?<!^)([A-Z])", "_$1").ToLower();
+        }
+    }
+
+    [Verb("pack", HelpText = "Pack a .fds file.")]
+    class PackOptions
+    {
+        public PackOptions(bool useHeader, string inputFile, string outputFile)
+        {
+            UseHeader = useHeader;
+            InputFile = inputFile;
+            OutputFile = outputFile;
+        }
+
+        [Option("head", Default = false)]
+        public bool UseHeader { get; }
+        [Value(0, Required = true)]
+        public string InputFile { get; }
+        [Value(1, Required = true)]
+        public string OutputFile { get; }
+    }
+
+    [Verb("unpack", HelpText = "Unpack a .fds file.")]
+    class UnpackOptions
+    {
+        [Value(0, Required = true)]
+        public string InputFile { get; }
+        [Value(1, Required = true)]
+        public string OutputDir { get; }
+
+        public UnpackOptions(string inputFile, string outputDir)
+        {
+            InputFile = inputFile;
+            OutputDir = outputDir;
         }
     }
 }
