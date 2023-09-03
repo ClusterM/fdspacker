@@ -16,14 +16,14 @@ namespace wtf.cluster.FDSPacker.JsonTypes
         public string? GameName { get; set; } = new("---");
 
         /// <summary>
-        /// Manufacturer code. = = 0x00, Unlicensed, = = 0x01, Nintendo
+        /// Manufacturer code. 0x00 = Unlicensed, 0x01 = Nintendo
         /// </summary>
         public byte ManufacturerCode { get; set; }
 
         /// <summary>
-        /// = = 0x20, " " — Normal disk
-        /// = = 0x45, "E" — Event(e.g.Japanese national DiskFax tournaments)
-        /// = = 0x52, "R" — Reduction in price via advertising
+        /// 0x20, " " = Normal disk
+        /// 0x45, "E" = Event(e.g.Japanese national DiskFax tournaments)
+        /// 0x52, "R" = Reduction in price via advertising
         /// </summary>
         public char GameType { get; set; }
 
