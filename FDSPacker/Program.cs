@@ -1,5 +1,7 @@
 ﻿using CommandLine;
 using CommandLine.Text;
+using System.Diagnostics;
+using System.Reflection;
 
 namespace wtf.cluster.FDSPacker
 {
@@ -60,13 +62,13 @@ namespace wtf.cluster.FDSPacker
             foreach (var err in errs)
             {
                 if (err.Tag == ErrorType.NoVerbSelectedError) continue;
-                Console.WriteLine($"Error: {err.Tag switch
+                Console.WriteLine($"Error: " + err.Tag switch
                 {
                     ErrorType.UnknownOptionError => "unknown option",
                     ErrorType.MissingRequiredOptionError => "missing required option",
                     ErrorType.BadVerbSelectedError => "unknown command",
                     _ => $"can't parse command line: {err.Tag}"
-                }}.");
+                } + ".");
             }
             Console.WriteLine($"Usage:");
             Console.WriteLine($" {Path.GetFileName(Process.GetCurrentProcess().MainModule?.FileName)} pack [options] <diskinfo.json> <output.fds>");
