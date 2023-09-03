@@ -17,14 +17,14 @@ namespace wtf.cluster.FDSPacker.JsonTypes
 
         private byte manufacturerCode;
         /// <summary>
-        /// Manufacturer code. = = 0x00, Unlicensed, = = 0x01, Nintendo
+        /// Manufacturer code. 0x00 = Unlicensed, 0x01 = Nintendo
         /// </summary>
         public string ManufacturerCode { get => $"0x{manufacturerCode:X02}"; set => manufacturerCode = (byte)value.ParseHex(); }
 
         /// <summary>
-        /// = = 0x20, " " — Normal disk
-        /// = = 0x45, "E" — Event(e.g.Japanese national DiskFax tournaments)
-        /// = = 0x52, "R" — Reduction in price via advertising
+        /// 0x20, " " = Normal disk
+        /// 0x45, "E" = Event(e.g.Japanese national DiskFax tournaments)
+        /// 0x52, "R" = Reduction in price via advertising
         /// </summary>
         public char GameType { get; set; }
 
