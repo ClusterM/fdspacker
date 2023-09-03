@@ -8,12 +8,24 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using wtf.cluster.FDSPacker.JsonTypes;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace wtf.cluster.FDSPacker
 {
     static class FdsPackUnpack
     {
         const string DISK_INFO_FILE = "diskinfo.json";
+
+        static JsonSerializerSettings jsonOptions = new JsonSerializerSettings
+        {
+            NullValueHandling = NullValueHandling.Include,
+            ContractResolver = new DefaultContractResolver
+            {
+                NamingStrategy = new SnakeCaseNamingStrategy()
+            },
+            Formatting = Formatting.Indented
+        };
 
         // Unpack a .fds file
         public static void Unpack(UnpackOptions options)
@@ -23,10 +35,12 @@ namespace wtf.cluster.FDSPacker
 
             // Copy data to a JSON object
             var root = new FdsJsonRoot();
+            var invalidCharsPattern = $"[{Regex.Escape(new string(Path.GetInvalidFileNameChars()))}]";
             for (var sideId = 0; sideId < fds.Sides.Count; sideId++)
             {
                 var side = fds.Sides[sideId];
                 var outSide = new FdsJsonSide();
+                outSide.WriteUnknown = !options.NoUnknown;
                 var sideDirName = $"side_{sideId + 1}";
                 var sideFullPath = Path.Combine(options.OutputDir, sideDirName);
                 Directory.CreateDirectory(sideFullPath);
@@ -39,8 +53,8 @@ namespace wtf.cluster.FDSPacker
                     var outFile = new FdsJsonFile();
                     CopyProperties(file, outFile);
                     // Avoid filename duplication
-                    var name = file.FileName;
-                    var altName = name.ToLower();
+                    var name = Regex.Replace(file.FileName.ToLower(), invalidCharsPattern, "_");
+                    var altName = name;
                     int id = 1;
                     while (usedFiles.Contains(altName!))
                     {
@@ -72,14 +86,7 @@ namespace wtf.cluster.FDSPacker
 
             // Save JSON
             var targetFile = Path.Combine(options.OutputDir, DISK_INFO_FILE);
-            var jsonOptions = new JsonSerializerOptions
-            {
-                WriteIndented = true,
-                DefaultIgnoreCondition = JsonIgnoreCondition.Never,
-                ReadCommentHandling = JsonCommentHandling.Skip,
-                PropertyNamingPolicy = new SnakeCaseNamingPolicy()
-            };
-            var json = JsonSerializer.Serialize(root, jsonOptions);
+            var json = JsonConvert.SerializeObject(root, jsonOptions);
             File.WriteAllText(targetFile, json);
         }
 
@@ -89,14 +96,8 @@ namespace wtf.cluster.FDSPacker
             var inputFile = options.InputFile;
             if (Directory.Exists(inputFile))
                 inputFile = Path.Combine(inputFile, DISK_INFO_FILE); ;
-            var jsonOptions = new JsonSerializerOptions
-            {
-                DefaultIgnoreCondition = JsonIgnoreCondition.Never,
-                ReadCommentHandling = JsonCommentHandling.Skip,
-                PropertyNamingPolicy = new SnakeCaseNamingPolicy()
-            };
             var jsonData = File.ReadAllText(inputFile);
-            var root = JsonSerializer.Deserialize<FdsJsonRoot>(jsonData, jsonOptions);
+            var root = JsonConvert.DeserializeObject<FdsJsonRoot>(jsonData, jsonOptions);
             if (root == null) throw new InvalidDataException("Invalid input JSON file");
 
             // Copy data from a JSON object

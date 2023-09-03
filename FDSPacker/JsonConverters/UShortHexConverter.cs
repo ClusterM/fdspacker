@@ -1,19 +1,21 @@
-﻿using System.Text.Json.Serialization;
-using System.Text.Json;
+﻿using Newtonsoft.Json;
 
 namespace wtf.cluster.FDSPacker.JsonConverters
 {
-    internal class UShortHexConverter : JsonConverter<ushort>
+    internal class UShortHexConverter : JsonConverter
     {
-        public override ushort Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override bool CanConvert(Type objectType)
+            => objectType == typeof(ushort);
+
+        public override object ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
-            var value = reader.GetString();
-            return (ushort)value!.ParseHex();
+            var value = reader.Value?.ToString();
+            return value!.ParseHex();
         }
 
-        public override void Write(Utf8JsonWriter writer, ushort value, JsonSerializerOptions options)
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
-            writer.WriteStringValue($"${value:X04}");
+            writer.WriteValue($"${value:X04}");
         }
     }
 }

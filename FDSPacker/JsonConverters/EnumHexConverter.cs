@@ -2,34 +2,30 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.Json.Serialization;
-using System.Text.Json;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace wtf.cluster.FDSPacker.JsonConverters
 {
-    internal class EnumHexConverter<T> : JsonConverter<T> where T : Enum
+    internal class EnumHexConverter<T> : JsonConverter
     {
-        public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override bool CanConvert(Type objectType)
+            => objectType.IsEnum;
+
+        public override object ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
-            var value = reader.GetString();
-            if (string.IsNullOrEmpty(value))
-                return (T)Enum.ToObject(typeToConvert, 0);
+            var value = reader.Value?.ToString();
             if (Enum.TryParse(typeof(T), value, true, out object? result))
                 return (T)result!;
-            return (T)Enum.ToObject(typeToConvert, value.ParseHex());
+            return (T)Enum.ToObject(typeof(T), value!.ParseHex());
         }
 
-        public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
-            if (Enum.IsDefined(typeof(T), value))
-            {
-                writer.WriteStringValue(value.ToString());
-            }
+            if (Enum.IsDefined(typeof(T), value!))
+                writer.WriteValue(value!.ToString());
             else
-            {
-                writer.WriteStringValue($"${Convert.ToUInt32(value):X02}");
-            }
+                writer.WriteValue($"${Convert.ToUInt32(value):X02}");
         }
     }
 }

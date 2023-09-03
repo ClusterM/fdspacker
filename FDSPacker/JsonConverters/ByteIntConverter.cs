@@ -1,19 +1,21 @@
-﻿using System.Text.Json.Serialization;
-using System.Text.Json;
+﻿using Newtonsoft.Json;
 
 namespace wtf.cluster.FDSPacker.JsonConverters
 {
-    internal class ByteIntConverter : JsonConverter<byte>
+    internal class ByteIntConverter : JsonConverter
     {
-        public override byte Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override bool CanConvert(Type objectType)
+            => objectType == typeof(byte);
+
+        public override object ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
-            var value = reader.GetString();
+            var value = reader.Value?.ToString();
             return (byte)value!.ParseHex();
         }
 
-        public override void Write(Utf8JsonWriter writer, byte value, JsonSerializerOptions options)
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
-            writer.WriteStringValue($"{value}");
+            writer.WriteValue($"{value}");
         }
     }
 }

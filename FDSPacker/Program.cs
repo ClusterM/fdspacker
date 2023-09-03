@@ -81,9 +81,24 @@ namespace wtf.cluster.FDSPacker
 
         static void PrintHelp(IEnumerable<Error> errs)
         {
+            foreach (var err in errs)
+            {
+                if (err.Tag == ErrorType.NoVerbSelectedError) continue;
+                Console.WriteLine($"Error: {err.Tag switch
+                {
+                    ErrorType.UnknownOptionError => "unknown option",
+                    ErrorType.MissingRequiredOptionError => "missing required option",
+                    ErrorType.BadVerbSelectedError => "unknown command",
+                    _ => $"can't parse command line: {err.Tag}"
+                }}.");
+            }
             Console.WriteLine($"Usage:");
-            Console.WriteLine($" {Path.GetFileName(Process.GetCurrentProcess().MainModule?.FileName)} pack [--header] <diskinfo.json> <output.fds>");
-            Console.WriteLine($" {Path.GetFileName(Process.GetCurrentProcess().MainModule?.FileName)} unpack <input.fds> <output directory>");
+            Console.WriteLine($" {Path.GetFileName(Process.GetCurrentProcess().MainModule?.FileName)} pack [options] <diskinfo.json> <output.fds>");
+            Console.WriteLine($"  Options:");
+            Console.WriteLine($"   -d, --header       - write .fds file with header");
+            Console.WriteLine($" {Path.GetFileName(Process.GetCurrentProcess().MainModule?.FileName)} unpack [options] <input.fds> <output directory>");
+            Console.WriteLine($"  Options:");
+            Console.WriteLine($"   -u, --no-unknown   - do not extract unknown fields");
         }
     }
 }

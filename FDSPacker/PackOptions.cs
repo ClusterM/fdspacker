@@ -13,7 +13,7 @@ namespace wtf.cluster.FDSPacker
             OutputFile = outputFile;
         }
 
-        [Option("head", Default = false)]
+        [Option('d', "header", Default = false)]
         public bool UseHeader { get; }
         [Value(0, Required = true)]
         public string InputFile { get; }
