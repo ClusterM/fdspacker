@@ -1,10 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
-using wtf.cluster.FDSPacker;
 using wtf.cluster.FDSPacker.JsonConverters;
 using static com.clusterrr.Famicom.Containers.FdsBlockFileHeader;
 

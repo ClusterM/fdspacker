@@ -1,15 +1,7 @@
-﻿using com.clusterrr.Famicom.Containers;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
+﻿using Newtonsoft.Json;
 using System.ComponentModel;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
-using wtf.cluster.FDSPacker;
 using wtf.cluster.FDSPacker.JsonConverters;
 using static com.clusterrr.Famicom.Containers.FdsBlockDiskInfo;
-using static com.clusterrr.Famicom.Containers.FdsBlockFileHeader;
 
 namespace wtf.cluster.FDSPacker.JsonTypes
 {

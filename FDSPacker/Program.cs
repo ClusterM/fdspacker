@@ -1,15 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Diagnostics;
-using System.Reflection;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
-using com.clusterrr.Famicom.Containers;
-using CommandLine;
+﻿using CommandLine;
 using CommandLine.Text;
-using wtf.cluster.FDSPacker.JsonTypes;
-
 
 namespace wtf.cluster.FDSPacker
 {
@@ -63,20 +53,6 @@ namespace wtf.cluster.FDSPacker
                 return 2;
             }
             return 0;
-        }
-
-        static void DisplayHelp<T>(ParserResult<T> result, IEnumerable<Error> errs)
-        {
-            var helpText = HelpText.AutoBuild(result, h =>
-            {
-                var version = Assembly.GetExecutingAssembly()?.GetName()?.Version;
-                var versionStr = $"{version?.Major}.{version?.Minor}{((version?.Build ?? 0) > 0 ? $"{(char)((byte)'a' + version!.Build)}" : "")}";
-                h.AdditionalNewLineAfterOption = false;
-                h.AddDashesToOption = true;
-                h.AutoVersion = false;
-                return HelpText.DefaultParsingErrorsHandler(result, h);
-            }, e => e);
-            Console.WriteLine(helpText);
         }
 
         static void PrintHelp(IEnumerable<Error> errs)

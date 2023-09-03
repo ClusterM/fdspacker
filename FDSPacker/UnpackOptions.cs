@@ -1,6 +1,5 @@
 ﻿using CommandLine;
 
-
 namespace wtf.cluster.FDSPacker
 {
     [Verb("unpack")]

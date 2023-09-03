@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace wtf.cluster.FDSPacker.JsonTypes
+﻿namespace wtf.cluster.FDSPacker.JsonTypes
 {
     internal class FdsJsonRoot
     {
