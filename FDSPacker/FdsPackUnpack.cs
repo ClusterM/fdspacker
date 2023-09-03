@@ -135,28 +135,9 @@ namespace wtf.cluster.FDSPacker
                 var destinationProperty = destinationType.GetProperty(sourceProperty.Name);
                 if (destinationProperty == null)
                     continue;
-                var sourceValue = sourceProperty.GetValue(source);
-                if (destinationProperty.PropertyType == sourceProperty.PropertyType)
-                {
-                    destinationProperty.SetValue(destination, sourceValue);
-                }
-                else if (destinationProperty.PropertyType.IsEnum && sourceProperty.PropertyType == typeof(string))
-                {
-                    object? outputValue;
-                    if (!Enum.TryParse(destinationProperty.PropertyType, sourceValue as string, true, out outputValue))
-                        outputValue = (sourceValue as string)!.ParseHex();
-                    if (outputValue == null)
-                        throw new InvalidDataException($"Invalid value \"{sourceValue}\" for \"{sourceProperty.Name}\"");
-                    destinationProperty.SetValue(destination, outputValue);
-                }
-                else if (destinationProperty.PropertyType == typeof(ushort) && sourceProperty.PropertyType == typeof(string))
-                {
-                    destinationProperty.SetValue(destination, (sourceValue as string)!.ParseHex());
-                }
-                else if (destinationProperty.PropertyType == typeof(string))
-                {
-                    destinationProperty.SetValue(destination, $"{sourceValue}");
-                }
+                if (destinationProperty.PropertyType != sourceProperty.PropertyType)
+                    continue;
+                destinationProperty.SetValue(destination, sourceProperty.GetValue(source));
             }
         }
 

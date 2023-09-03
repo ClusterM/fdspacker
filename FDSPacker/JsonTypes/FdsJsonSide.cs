@@ -15,11 +15,10 @@ namespace wtf.cluster.FDSPacker.JsonTypes
         /// </summary>
         public string? GameName { get; set; } = new("---");
 
-        private byte manufacturerCode;
         /// <summary>
         /// Manufacturer code. = = 0x00, Unlicensed, = = 0x01, Nintendo
         /// </summary>
-        public string ManufacturerCode { get => $"0x{manufacturerCode:X02}"; set => manufacturerCode = (byte)value.ParseHex(); }
+        public byte ManufacturerCode { get; set; }
 
         /// <summary>
         /// = = 0x20, " " — Normal disk

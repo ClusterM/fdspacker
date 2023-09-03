@@ -33,6 +33,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="buildtime.txt" />
+    <None Remove="commit.txt" />
+    <None Remove="Properties\launchSettings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="..\LICENSE.txt">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
