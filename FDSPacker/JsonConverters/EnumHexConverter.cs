@@ -28,7 +28,7 @@ namespace wtf.cluster.FDSPacker.JsonConverters
             }
             else
             {
-                writer.WriteStringValue("0x" + Convert.ToString(Convert.ToUInt32(value), 16).ToUpper());
+                writer.WriteStringValue($"${Convert.ToUInt32(value):X02}");
             }
         }
     }

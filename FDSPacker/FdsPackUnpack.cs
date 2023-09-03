@@ -77,7 +77,6 @@ namespace wtf.cluster.FDSPacker
                 WriteIndented = true,
                 DefaultIgnoreCondition = JsonIgnoreCondition.Never,
                 ReadCommentHandling = JsonCommentHandling.Skip,
-                Converters = { new JsonStringEnumConverter() },
                 PropertyNamingPolicy = new SnakeCaseNamingPolicy()
             };
             var json = JsonSerializer.Serialize(root, jsonOptions);
@@ -88,11 +87,12 @@ namespace wtf.cluster.FDSPacker
         public static void Pack(PackOptions options)
         {
             var inputFile = options.InputFile;
+            if (Directory.Exists(inputFile))
+                inputFile = Path.Combine(inputFile, DISK_INFO_FILE); ;
             var jsonOptions = new JsonSerializerOptions
             {
                 DefaultIgnoreCondition = JsonIgnoreCondition.Never,
                 ReadCommentHandling = JsonCommentHandling.Skip,
-                Converters = { new JsonStringEnumConverter() },
                 PropertyNamingPolicy = new SnakeCaseNamingPolicy()
             };
             var jsonData = File.ReadAllText(inputFile);
