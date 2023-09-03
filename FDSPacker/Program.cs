@@ -15,30 +15,17 @@ namespace wtf.cluster.FDSPacker
         {
             try
             {
-                var version = Assembly.GetExecutingAssembly()?.GetName()?.Version;
-                var versionStr = $"{version?.Major}.{version?.Minor}{((version?.Build ?? 0) > 0 ? $"{(char)((byte)'a' + version!.Build)}" : "")}";
-                Console.WriteLine($"{APP_NAME} " +
-#if !INTERIM
-                    $"v{versionStr}"
-#else
-                "interim version"
-#endif
-#if DEBUG
-                    + " (debug)"
-#endif
-                );
-#if INTERIM || DEBUG
-                Console.WriteLine($"  Commit: {Properties.Resources.GitCommit} @ {REPO_PATH}");
-                Console.WriteLine($"  Build time: {BUILD_TIME.ToLocalTime()}");
-#endif
-                Console.WriteLine("  (c) Alexey 'Cluster' / https://cluster.wtf / cluster@cluster.wtf");
-                Console.WriteLine("");
-
                 var parser = new Parser(with => with.HelpWriter = null);
                 var parserResult = parser.ParseArguments<PackOptions, UnpackOptions>(args);
                 parserResult
-                    .WithParsed<PackOptions>(options => FdsPackUnpack.Pack(options))
-                    .WithParsed<UnpackOptions>(options => FdsPackUnpack.Unpack(options))
+                    .WithParsed<PackOptions>(options => {
+                        if (!options.Quiet) PrintHeader();
+                        FdsPackUnpack.Pack(options);
+                     })
+                    .WithParsed<UnpackOptions>(options => {
+                        if (!options.Quiet) PrintHeader();
+                        FdsPackUnpack.Unpack(options);
+                     })
                     .WithNotParsed(errs =>
                     {
                         PrintHelp(errs);
@@ -57,12 +44,35 @@ namespace wtf.cluster.FDSPacker
             return 0;
         }
 
+        static void PrintHeader()
+        {
+            var version = Assembly.GetExecutingAssembly()?.GetName()?.Version;
+            var versionStr = $"{version?.Major}.{version?.Minor}{((version?.Build ?? 0) > 0 ? $"{(char)((byte)'a' + version!.Build)}" : "")}";
+            Console.WriteLine($"{APP_NAME} " +
+#if !INTERIM
+                $"v{versionStr}"
+#else
+                "interim version"
+#endif
+#if DEBUG
+                + " (debug)"
+#endif
+            );
+#if INTERIM || DEBUG
+            Console.WriteLine($"  Commit: {Properties.Resources.GitCommit} @ {REPO_PATH}");
+            Console.WriteLine($"  Build time: {BUILD_TIME.ToLocalTime()}");
+#endif
+            Console.WriteLine("  (c) Alexey Cluster / https://cluster.wtf / cluster@cluster.wtf");
+            Console.WriteLine("");
+        }
+
         static void PrintHelp(IEnumerable<Error> errs)
         {
+            PrintHeader();
             foreach (var err in errs)
             {
                 if (err.Tag == ErrorType.NoVerbSelectedError) continue;
-                Console.WriteLine($"Error: " + err.Tag switch
+                Console.WriteLine($"ERROR: " + err.Tag switch
                 {
                     ErrorType.UnknownOptionError => "unknown option",
                     ErrorType.MissingRequiredOptionError => "missing required option",
@@ -74,9 +84,11 @@ namespace wtf.cluster.FDSPacker
             Console.WriteLine($" {Path.GetFileName(Process.GetCurrentProcess().MainModule?.FileName)} pack [options] <diskinfo.json> <output.fds>");
             Console.WriteLine($"  Options:");
             Console.WriteLine($"   -d, --header       - write .fds file with header");
+            Console.WriteLine($"   -q, --quiet        - do not print anythng to the console");
             Console.WriteLine($" {Path.GetFileName(Process.GetCurrentProcess().MainModule?.FileName)} unpack [options] <input.fds> <output directory>");
             Console.WriteLine($"  Options:");
             Console.WriteLine($"   -u, --no-unknown   - do not extract unknown fields");
+            Console.WriteLine($"   -q, --quiet        - do not print anythng to the console");
         }
     }
 }
