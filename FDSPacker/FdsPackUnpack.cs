@@ -24,7 +24,12 @@ namespace wtf.cluster.FDSPacker
         // Unpack a .fds file
         public static void Unpack(UnpackOptions options)
         {
+            var write = (string text) => { if (!options.Quiet) Console.Write(text); };
+            var writeLine = (string text) => { if (!options.Quiet) Console.WriteLine(text); };
+
+            write($"Reading {options.InputFile}... ");
             var fds = FdsFile.FromFile(options.InputFile);
+            writeLine("OK");
             Directory.CreateDirectory(options.OutputDir);
 
             // Copy data to a JSON object
@@ -70,7 +75,9 @@ namespace wtf.cluster.FDSPacker
                     // Absolute path
                     var targetPath = Path.Combine(options.OutputDir, outFile.Data);
                     // Saving file data
+                    write($"Saving {file.FileName} as {outFile.Data}... ");
                     File.WriteAllBytes(targetPath, file.Data.ToArray());
+                    writeLine("OK");
 
                     outSide.Files.Add(outFile);
                 }
@@ -81,18 +88,25 @@ namespace wtf.cluster.FDSPacker
             // Save JSON
             var targetFile = Path.Combine(options.OutputDir, DISK_INFO_FILE);
             var json = JsonConvert.SerializeObject(root, jsonOptions);
+            write($"Saving {targetFile}... ");
             File.WriteAllText(targetFile, json);
+            writeLine("OK");
         }
 
         // Pack a .fds file
         public static void Pack(PackOptions options)
         {
+            var write = (string text) => { if (!options.Quiet) Console.Write(text); };
+            var writeLine = (string text) => { if (!options.Quiet) Console.WriteLine(text); };
+
             var inputFile = options.InputFile;
             if (Directory.Exists(inputFile))
-                inputFile = Path.Combine(inputFile, DISK_INFO_FILE); ;
+                inputFile = Path.Combine(inputFile, DISK_INFO_FILE);
+            write($"Reading {inputFile}... ");
             var jsonData = File.ReadAllText(inputFile);
             var root = JsonConvert.DeserializeObject<FdsJsonRoot>(jsonData, jsonOptions);
             if (root == null) throw new InvalidDataException("Invalid input JSON file");
+            writeLine($"OK");
 
             // Copy data from a JSON object
             var output = new FdsFile();
@@ -107,14 +121,20 @@ namespace wtf.cluster.FDSPacker
                     var outputFile = new FdsDiskFile();
                     CopyProperties(file, outputFile);
                     var dataPath = Path.Combine(Path.GetDirectoryName(inputFile)!, file.Data);
+                    write($"Reading {file.Data}... ");
                     outputFile.Data = File.ReadAllBytes(dataPath);
+                    writeLine($"OK");
                     outputSide.Files.Add(outputFile);
                 }
 
                 output.Sides.Add(outputSide);
             }
 
+            write($"Saving {options.OutputFile}... ");
             output.Save(options.OutputFile, options.UseHeader);
+            writeLine($"OK");
+
+            writeLine($"Done.");
         }
 
         // Easy way to copy properties between types
