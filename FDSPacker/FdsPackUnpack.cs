@@ -7,7 +7,7 @@ using wtf.cluster.FDSPacker.JsonTypes;
 
 namespace wtf.cluster.FDSPacker
 {
-    static class FdsPackUnpack
+    public static class FdsPackUnpack
     {
         const string DISK_INFO_FILE = "diskinfo.json";
 

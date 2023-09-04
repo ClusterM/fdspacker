@@ -3,7 +3,7 @@
 namespace wtf.cluster.FDSPacker
 {
     [Verb("unpack")]
-    class UnpackOptions
+    public class UnpackOptions
     {
         public UnpackOptions(bool noUnknown, bool quiet, string inputFile, string outputDir)
         {

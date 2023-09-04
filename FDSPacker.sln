@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33122.133
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FDSPacker", "FDSPacker\FDSPacker.csproj", "{34C70095-D92A-4FA3-857D-073D310EF3BC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FDSPacker", "FDSPacker\FDSPacker.csproj", "{34C70095-D92A-4FA3-857D-073D310EF3BC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FDSPackerTests", "FDSPackerTests\FDSPackerTests.csproj", "{ECA437A0-4162-48FF-B24E-9FF31EE42CFF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,6 +20,12 @@ Global
 		{34C70095-D92A-4FA3-857D-073D310EF3BC}.Interim|Any CPU.Build.0 = Interim|Any CPU
 		{34C70095-D92A-4FA3-857D-073D310EF3BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{34C70095-D92A-4FA3-857D-073D310EF3BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ECA437A0-4162-48FF-B24E-9FF31EE42CFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ECA437A0-4162-48FF-B24E-9FF31EE42CFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ECA437A0-4162-48FF-B24E-9FF31EE42CFF}.Interim|Any CPU.ActiveCfg = Debug|Any CPU
+		{ECA437A0-4162-48FF-B24E-9FF31EE42CFF}.Interim|Any CPU.Build.0 = Debug|Any CPU
+		{ECA437A0-4162-48FF-B24E-9FF31EE42CFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ECA437A0-4162-48FF-B24E-9FF31EE42CFF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
