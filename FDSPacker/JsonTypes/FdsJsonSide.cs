@@ -64,7 +64,7 @@ namespace wtf.cluster.FDSPacker.JsonTypes
         /// Unknown, offset 0x18.
         /// Always 0x00
         /// </summary>
-        [JsonProperty(Order = 7, DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(Order = 7)]
         [DefaultValue(0x00)]
         [JsonConverter(typeof(ByteHexConverter))]
         public byte Unknown01 { get; set; } = 0x00;
@@ -80,7 +80,7 @@ namespace wtf.cluster.FDSPacker.JsonTypes
         /// Unknown, offset 0x1A.
         /// Always 0xFF
         /// </summary>
-        [JsonProperty(Order = 9, DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(Order = 9)]
         [DefaultValue(0xFF)]
         [JsonConverter(typeof(ByteHexConverter))]
         public byte Unknown02 { get; set; } = 0xFF;
@@ -89,7 +89,7 @@ namespace wtf.cluster.FDSPacker.JsonTypes
         /// Unknown, offset 0x1B.
         /// Always 0xFF
         /// </summary>
-        [JsonProperty(Order = 10, DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(Order = 10)]
         [DefaultValue(0xFF)]
         [JsonConverter(typeof(ByteHexConverter))]
         public byte Unknown03 { get; set; } = 0xFF;
@@ -98,7 +98,7 @@ namespace wtf.cluster.FDSPacker.JsonTypes
         /// Unknown, offset 0x1C.
         /// Always 0xFF
         /// </summary>
-        [JsonProperty(Order = 11, DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(Order = 11)]
         [DefaultValue(0xFF)]
         [JsonConverter(typeof(ByteHexConverter))]
         public byte Unknown04 { get; set; } = 0xFF;
@@ -107,7 +107,7 @@ namespace wtf.cluster.FDSPacker.JsonTypes
         /// Unknown, offset 0x1D.
         /// Always 0xFF
         /// </summary>
-        [JsonProperty(Order = 12, DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(Order = 12)]
         [DefaultValue(0xFF)]
         [JsonConverter(typeof(ByteHexConverter))]
         public byte Unknown05 { get; set; } = 0xFF;
@@ -116,7 +116,7 @@ namespace wtf.cluster.FDSPacker.JsonTypes
         /// Unknown, offset 0x1E.
         /// Always 0xFF
         /// </summary>
-        [JsonProperty(Order = 13, DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(Order = 13)]
         [DefaultValue(0xFF)]
         [JsonConverter(typeof(ByteHexConverter))]
         public byte Unknown06 { get; set; } = 0xFF;
@@ -139,7 +139,7 @@ namespace wtf.cluster.FDSPacker.JsonTypes
         /// Always 0x61.
         /// Speculative: Region code?
         /// </summary>
-        [JsonProperty(Order = 16, DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(Order = 16)]
         [DefaultValue(0x61)]
         [JsonConverter(typeof(ByteHexConverter))]
         public byte Unknown07 { get; set; } = 0x61;
@@ -149,7 +149,7 @@ namespace wtf.cluster.FDSPacker.JsonTypes
         /// Always 0x00.
         /// Speculative: Location/site?
         /// </summary>
-        [JsonProperty(Order = 17, DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(Order = 17)]
         [DefaultValue(0x00)]
         [JsonConverter(typeof(ByteHexConverter))]
         public byte Unknown08 { get; set; } = 0x00;
@@ -158,7 +158,7 @@ namespace wtf.cluster.FDSPacker.JsonTypes
         /// Unknown, offset 0x25.
         /// Always 0x00
         /// </summary>
-        [JsonProperty(Order = 18, DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(Order = 18)]
         [DefaultValue(0x00)]
         [JsonConverter(typeof(ByteHexConverter))]
         public byte Unknown09 { get; set; } = 0x00;
@@ -167,7 +167,7 @@ namespace wtf.cluster.FDSPacker.JsonTypes
         /// Unknown, offset 0x26.
         /// Always 0x02
         /// </summary>
-        [JsonProperty(Order = 19, DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(Order = 19)]
         [DefaultValue(0x02)]
         [JsonConverter(typeof(ByteHexConverter))]
         public byte Unknown10 { get; set; } = 0x02;
@@ -175,7 +175,7 @@ namespace wtf.cluster.FDSPacker.JsonTypes
         /// <summary>
         /// Unknown, offset 0x27. Speculative: some kind of game information representation?
         /// </summary>
-        [JsonProperty(Order = 20, DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(Order = 20)]
         [DefaultValue(0x00)]
         [JsonConverter(typeof(ByteHexConverter))]
         public byte Unknown11 { get; set; } = 0x00;
@@ -183,7 +183,7 @@ namespace wtf.cluster.FDSPacker.JsonTypes
         /// <summary>
         /// Unknown, offset 0x28. Speculative: some kind of game information representation?
         /// </summary>
-        [JsonProperty(Order = 21, DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(Order = 21)]
         [DefaultValue(0x00)]
         [JsonConverter(typeof(ByteHexConverter))]
         public byte Unknown12 { get; set; } = 0x00;
@@ -191,7 +191,7 @@ namespace wtf.cluster.FDSPacker.JsonTypes
         /// <summary>
         /// Unknown, offset 0x29. Speculative: some kind of game information representation?
         /// </summary>
-        [JsonProperty(Order = 22, DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(Order = 22)]
         [DefaultValue(0x00)]
         [JsonConverter(typeof(ByteHexConverter))]
         public byte Unknown13 { get; set; } = 0x00;
@@ -199,7 +199,7 @@ namespace wtf.cluster.FDSPacker.JsonTypes
         /// <summary>
         /// Unknown, offset 0x2A. Speculative: some kind of game information representation?
         /// </summary>
-        [JsonProperty(Order = 23, DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(Order = 23)]
         [DefaultValue(0x00)]
         [JsonConverter(typeof(ByteHexConverter))]
         public byte Unknown14 { get; set; } = 0x00;
@@ -207,7 +207,7 @@ namespace wtf.cluster.FDSPacker.JsonTypes
         /// <summary>
         /// Unknown, offset 0x2B. Speculative: some kind of game information representation?
         /// </summary>
-        [JsonProperty(Order = 24, DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(Order = 24)]
         [DefaultValue(0x00)]
         [JsonConverter(typeof(ByteHexConverter))]
         public byte Unknown15 { get; set; } = 0x00;
@@ -222,7 +222,7 @@ namespace wtf.cluster.FDSPacker.JsonTypes
         /// <summary>
         /// Unknown, offset 0x2F
         /// </summary>
-        [JsonProperty(Order = 26, DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(Order = 26)]
         [DefaultValue(0x00)]
         [JsonConverter(typeof(ByteHexConverter))]
         public byte Unknown16 { get; set; } = 0x00;
@@ -231,7 +231,7 @@ namespace wtf.cluster.FDSPacker.JsonTypes
         /// Unknown, offset 0x30.
         /// Always 0x80
         /// </summary>
-        [JsonProperty(Order = 27, DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(Order = 27)]
         [DefaultValue(0x80)]
         [JsonConverter(typeof(ByteHexConverter))]
         public byte Unknown17 { get; set; } = 0x80;
@@ -247,7 +247,7 @@ namespace wtf.cluster.FDSPacker.JsonTypes
         /// Unknown, offset 0x33, unknown.
         /// Always 0x07
         /// </summary>
-        [JsonProperty(Order = 29, DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty(Order = 29)]
         [DefaultValue(0x00)]
         [JsonConverter(typeof(ByteHexConverter))]
         public byte Unknown18 { get; set; } = 0x00;
