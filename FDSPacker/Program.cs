@@ -83,12 +83,12 @@ namespace wtf.cluster.FDSPacker
             Console.WriteLine($"Usage:");
             Console.WriteLine($" {Path.GetFileName(Process.GetCurrentProcess().MainModule?.FileName)} pack [options] <diskinfo.json> <output.fds>");
             Console.WriteLine($"  Options:");
-            Console.WriteLine($"   -d, --header       - write .fds file with header");
-            Console.WriteLine($"   -q, --quiet        - do not print anythng to the console");
+            Console.WriteLine($"   -d, --header       - add header to the output .fds file");
+            Console.WriteLine($"   -q, --quiet        - do not print anything to the console");
             Console.WriteLine($" {Path.GetFileName(Process.GetCurrentProcess().MainModule?.FileName)} unpack [options] <input.fds> <output directory>");
             Console.WriteLine($"  Options:");
             Console.WriteLine($"   -u, --no-unknown   - do not extract unknown fields");
-            Console.WriteLine($"   -q, --quiet        - do not print anythng to the console");
+            Console.WriteLine($"   -q, --quiet        - do not print anything to the console");
         }
     }
 }
