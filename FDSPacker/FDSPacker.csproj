@@ -19,6 +19,8 @@
     <Configurations>Debug;Release;Interim</Configurations>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <PublishTrimmed>true</PublishTrimmed>
+    <TrimMode>link</TrimMode>
+    <SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
