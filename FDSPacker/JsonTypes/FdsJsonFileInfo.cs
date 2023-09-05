@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.ComponentModel;
 using wtf.cluster.FDSPacker.JsonConverters;
 using static com.clusterrr.Famicom.Containers.FdsBlockFileHeader;
 
@@ -15,7 +16,7 @@ namespace wtf.cluster.FDSPacker.JsonTypes
         public byte FileIndicateCode { get; set; }
 
         [JsonProperty(Order = 2)]
-        public string? FileName { get; set; }
+        public string? FileName { get; set; } = "FILENAME";
 
         [JsonProperty(Order = 3)]
         [JsonConverter(typeof(UShortHexConverter))]

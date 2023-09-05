@@ -21,7 +21,7 @@ namespace wtf.cluster.FDSPacker.JsonTypes
         /// 3-letter ASCII code per game (e.g. ZEL for The Legend of Zelda)
         /// </summary>
         [JsonProperty(Order = 1)]
-        public string? GameName { get; set; }
+        public string? GameName { get; set; } = "GAMENAME";
 
         /// <summary>
         /// 0x20 = " " — Normal disk
@@ -30,7 +30,7 @@ namespace wtf.cluster.FDSPacker.JsonTypes
         /// </summary>
         [JsonProperty(Order = 2)]
         [JsonConverter(typeof(CharHexConverter))]
-        public char GameType { get; set; }
+        public char GameType { get; set; } = ' ';
 
         /// <summary>
         /// Game version/revision number. Starts at 0x00, increments per revision
