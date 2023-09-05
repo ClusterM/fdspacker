@@ -29,6 +29,8 @@ jobs:
   publish:
     needs: create-release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write   
     env:
       APP_NAME: fdspacker
       PROJECT_PATH: FDSPacker
