@@ -83,6 +83,10 @@ FDSPacker stores all metadata to `diskinfo.json` file. Example:
 ```
 All integer values can be stored as hexadecimal value: `$FF` or `0xFF`. You can use `--no-unknown` option when unpacking to ignore all unknown fields.
 
+## Download
+Releases: https://github.com/ClusterM/fdspacker/releases
+Automatic interim builds: https://clusterm.github.io/fdspacker/
+
 ## Donate
 * [Buy Me A Coffee](https://www.buymeacoffee.com/cluster)
 * [Donation Alerts](https://www.donationalerts.com/r/clustermeerkat)
