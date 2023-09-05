@@ -18,7 +18,6 @@
     <PackageTags>Nintendo;Famicom;FDS;Famicom Disk System</PackageTags>
     <Configurations>Debug;Release;Interim</Configurations>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
-    <PublishTrimmed>true</PublishTrimmed>
     <TrimMode>link</TrimMode>
     <SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>
   </PropertyGroup>
