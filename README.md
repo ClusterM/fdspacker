@@ -1,5 +1,5 @@
 # FDSPacker
-It's a simple CLI tool to pack and unpack .fds (Famicom Disk System disk images) files: extract/combine metadata and file. Useful for FDS developers.
+It's a simple CLI tool to pack and unpack .fds (Famicom Disk System disk images) files: extract/combine metadata and files. Useful for FDS developers.
 
 ## Usage
 There are two commands: `pack` and `unpack`:
