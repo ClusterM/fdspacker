@@ -2,6 +2,8 @@
 It's a simple CLI tool to pack and unpack .fds (Famicom Disk System disk images) files: extract/combine metadata and files. Useful for FDS developers.
 
 ## Usage
+This application requires .NET 6. You need either install .NET 6 on your system, or use "self-contained" version.
+
 There are two commands: `pack` and `unpack`:
 ```
  fdspacker.exe pack [options] <diskinfo.json> <output.fds>
